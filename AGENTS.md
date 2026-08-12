@@ -8,6 +8,8 @@ A collection of skills for AI coding agents working with Pro Cycling Manager gam
 
 ## Creating a New Skill
 
+Skills follow the [Agent Skills](https://agentskills.io/) format, so they work with any agent that reads it.
+
 Always use the `/skill-creator:skill-creator` skill to create a new skill (or to edit and
 improve an existing one). It walks through capturing intent, drafting `SKILL.md`, running
 test prompts, and optimizing the description for reliable triggering. Then apply the
