@@ -22,6 +22,6 @@ Each skill contains:
 
 ## Resources
 
-- [cdb-converter](https://github.com/PCMStack/converter) — lossless `.cdb` ↔ SQLite converter
-- [pcm-mcp](https://github.com/PCMStack/mcp) — MCP server for Pro Cycling Manager saves
-- [Agent Skills](https://agentskills.io/) — the skill format used here
+- [cdb-converter](https://github.com/PCMStack/converter) — Convert Pro Cycling Manager CDB files to/from SQLite.
+- [pcm-mcp](https://github.com/PCMStack/mcp) — MCP server for querying and editing Pro Cycling Manager game databases
+- [Agent Skills](https://agentskills.io/) — The skill format used here
