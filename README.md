@@ -10,7 +10,7 @@ PCM is a game built on files: a binary `.cdb` database holding your whole career
 
 ### pcm-db-editor
 
-Opens, explores and edits Pro Cycling Manager save files and game databases (`.cdb`). Routes between the [pcm-mcp](https://github.com/mpicciolli/pcm-mcp) MCP server for saves living on your own machine, and a lossless `cdb → SQLite` conversion for files you can read directly — then writes changes back to a new file, never over your career.
+Opens, explores and edits Pro Cycling Manager save files and game databases (`.cdb`). Routes between the [pcm-mcp](https://github.com/PCMStack/pcm-mcp) MCP server for saves living on your own machine, and a lossless `cdb → SQLite` conversion for files you can read directly — then writes changes back to a new file, never over your career.
 
 **Use when:**
 
@@ -96,5 +96,5 @@ Each skill contains:
 
 ## Resources
 
-- [pcm-mcp](https://github.com/mpicciolli/pcm-mcp) — MCP server for Pro Cycling Manager saves
+- [pcm-mcp](https://github.com/PCMStack/pcm-mcp) — MCP server for Pro Cycling Manager saves
 - [cdb-converter](https://www.npmjs.com/package/cdb-converter) — lossless `.cdb` ↔ SQLite converter
