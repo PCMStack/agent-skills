@@ -32,4 +32,4 @@ skills/
 
 - **Skill directory**: `kebab-case` (e.g., `pcm-db-editor`)
 - **SKILL.md**: Always uppercase, always this exact filename
-- **Scripts**: `kebab-case.sh` or `kebab-case.mjs` (e.g., `open-cdb-sh`)
+- **Scripts**: `kebab-case.sh` or `kebab-case.mjs` (e.g., `open-cdb.sh`)
