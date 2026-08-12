@@ -4,7 +4,7 @@ Guidance for AI coding agents working in this repository.
 
 ## What this repository is
 
-A collection of skills for AI coding agents working with Pro Cycling Manager game. Skills are packaged instructions and scripts that extend agent capabilities.
+A collection of skills for AI coding agents working with the Pro Cycling Manager game. Skills are packaged instructions and scripts that extend agent capabilities.
 
 ## Creating a New Skill
 
