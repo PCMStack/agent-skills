@@ -1,6 +1,8 @@
 # PCM Agent Skills
 
-A collection of skills for AI coding agents working with Pro Cycling Manager game. Skills are packaged instructions and scripts that extend agent capabilities.
+A collection of skills for AI coding agents working with [Pro Cycling Manager](https://www.cyanide-studio.com/). Skills are packaged instructions and scripts that extend agent capabilities.
+
+Skills follow the [Agent Skills](https://agentskills.io/) format, so they work with any agent that reads it.
 
 ## Available Skills
 
@@ -22,7 +24,4 @@ Each skill contains:
 
 - [cdb-converter](https://github.com/mpicciolli/converter) — lossless `.cdb` ↔ SQLite converter
 - [pcm-mcp](https://github.com/mpicciolli/mcp) — MCP server for Pro Cycling Manager saves
-
-## License
-
-MIT
+- [Agent Skills](https://agentskills.io/) — the skill format used here
