@@ -27,7 +27,9 @@ fi
 command -v sqlite3 >/dev/null || { echo "error: sqlite3 not found on PATH" >&2; exit 69; }
 
 # The original save is the user's career. Keep an untouched copy before anything else.
-BAK="$CDB.bak"
+# The copy keeps the .cdb extension — the game only lists .cdb files, so a .bak backup
+# could never be loaded in-game.
+BAK="${CDB%.cdb}_backup.cdb"
 if [[ -e "$BAK" ]]; then
   echo "backup: $BAK already exists, keeping it"
 else

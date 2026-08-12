@@ -1,6 +1,6 @@
 ---
 name: pcm-db-editor
-description: Open, explore and edit Pro Cycling Manager save files and game databases (.cdb) — rider ratings, team rosters, contracts, races, startlists. Routes between the pcm-mcp MCP server (for saves living on the user's own machine) and a cdb → SQLite conversion via the cdb-converter CLI (for .cdb files uploaded into the conversation or sitting in the working directory). Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
+description: Open, explore and edit Pro Cycling Manager databases (.cdb) — rider ratings, team rosters, contracts, races. Routes between the pcm-mcp MCP server and a cdb → SQLite conversion via the cdb-converter CLI. Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
 ---
 
 # Pro Cycling Manager save & database editing
@@ -24,8 +24,8 @@ determines what can actually touch it:
 | The save is on the user's own machine (they give a path, or ask you to find their saves)                                | **Route A — pcm-mcp**           |
 | The `.cdb` was uploaded into the conversation, is in the working directory, or you can read it with your own file tools | **Route B — convert to SQLite** |
 
-The reasoning: pcm-mcp runs on the user's machine and can reach `%APPDATA%`, auto-discover
-careers, and write a new `.cdb` there. It cannot see a file that only exists in your
+The reasoning: pcm-mcp runs on the user's machine, so it can reach the game's own save
+directories, auto-discover careers, and write a new `.cdb` there. It cannot see a file that only exists in your
 sandbox. Conversely, the converter route works anywhere you can run `npx`, and gives you
 unrestricted SQL — including JOINs, aggregates and bulk edits the MCP tools don't expose.
 
@@ -40,21 +40,15 @@ Route A needs the `pcm_*` tools to be present in your tool list. Look; don't ass
 If they're absent, **mention it once and continue on Route B** — don't install anything and
 don't block on it:
 
-> Note: the `pcm-mcp` server isn't installed here. It adds PCM-aware tools (save discovery,
-> roster lookups, guarded edits). You can add it with
-> `claude mcp add pcm-mcp -- npx -y pcm-mcp` (Node 22+), then restart. Meanwhile I'll work
-> directly on the file.
-
-Auto-discovery (`pcm_list_saves`) is Windows-only — PCM careers live under
-`%APPDATA%/Pro Cycling Manager <year>/Cloud/<profile>/`. On macOS/Linux the saves sit inside
-a Wine/Proton prefix that can't be located reliably, so ask for an absolute path and pass it
-to `pcm_validate_save`.
+When they are present, let `pcm_list_saves` find the careers rather than guessing at install
+locations — it knows where this platform and game year put them. If it returns nothing, ask
+the user for the path instead of hunting through directories yourself.
 
 ## The one rule that matters: never damage the save
 
 A PCM career can represent hundreds of hours. Treat the original `.cdb` as read-only, always:
 
-- **Back it up before touching anything.** `cp save.cdb save.cdb.bak` costs nothing.
+- **Back it up before touching anything.** `cp save.cdb save_backup.cdb` costs nothing..
 - **Write edits to a new file**, e.g. `save_edited.cdb` next to the original. The MCP write
   tools enforce this (they refuse to overwrite); on Route B _you_ enforce it.
 - **Watch the CLI's default output path.** `npx cdb-converter save.sqlite` writes to
@@ -70,7 +64,8 @@ the conversation yourself.
 
 Typical flow:
 
-1. **Locate** — `pcm_list_saves` (Windows) or `pcm_validate_save <absolute path>`.
+1. **Locate** — `pcm_list_saves` to discover careers, or `pcm_validate_save <absolute path>`
+   when the user already gave you a file.
 2. **Explore** — `pcm_get_save_schema` / `pcm_get_table_schema` to learn the shape,
    `pcm_search_cyclist`, `pcm_search_team`, `pcm_get_team_roster`, `pcm_get_player_info`
    for the common questions, `pcm_query_save` for anything else (read-only `SELECT` /
@@ -79,32 +74,28 @@ Typical flow:
    single `INSERT`/`UPDATE`/`DELETE`. Both write to a new `outputPath` and refuse to
    overwrite. DDL and stacked statements are rejected.
 
-Two constraints worth remembering so you don't waste a call: rating values are bounded
-55–85, and `mediumMountain` / `currentAbility` don't exist on older saves (they come back
-`null`, and setting `mediumMountain` is rejected there).
-
 When a user wants several edits at once, note that `pcm_update_save` applies one statement
 per call and each call produces a new file. Chaining three edits means three files. Past
 two or three changes, Route B is cleaner: do it all in SQLite, convert once.
 
 ## Route B — convert to SQLite, edit, convert back
 
-The `cdb-converter` package (Node 22+) does a **lossless** round trip: tables, column order,
+The `cdb-converter` package does a **lossless** round trip: tables, column order,
 data types and internal flags all survive `cdb → sqlite → cdb`, so the game reads the result
 happily.
 
 ### Open
 
 ```bash
-cp save.cdb save.cdb.bak                              # backup first, always
+cp save.cdb save_backup.cdb                           # backup first, always — keep .cdb
 npx -y cdb-converter save.cdb save.sqlite --normalize
 ```
 
 `--normalize` reconstructs `PRIMARY KEY` / `FOREIGN KEY` constraints from PCM's naming
 conventions. Use it by default: it makes the database self-describing, so you can discover
-how tables relate instead of guessing, and it's round-trip safe (constraints are declarative
-metadata; the reverse conversion ignores them). Costs ~10% time and ~40% size. Add
-`--index-fk` only if you're running heavy JOINs on a big save — it roughly doubles the size.
+how tables relate instead of guessing, and it's round-trip safe . Costs ~10% time and ~40% size.
+
+Add `--index-fk` only if you're running heavy JOINs on a big save — it roughly doubles the size.
 
 `scripts/open_cdb.sh` bundles the backup, the conversion and a first inventory of tables by
 row count — a good starting point when you don't know the save yet.
@@ -162,3 +153,10 @@ which file the user should load, and where their backup is. If a query returned 
 say so rather than filling the gap with plausible-looking PCM knowledge; an empty result
 usually means the column or table is named differently in that game year, and the fix is to
 go look at the schema again.
+
+
+
+### TODO CONSTRAINT
+Two constraints worth remembering so you don't waste a call: rating values are bounded
+55–85, and `mediumMountain` / `currentAbility` don't exist on older saves (they come back
+`null`, and setting `mediumMountain` is rejected there).
