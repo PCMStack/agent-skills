@@ -1,6 +1,6 @@
 # Database schema
 
-Read this when you're past a single-table `SELECT`. It covers the naming conventions Pro cycling manager
+Read this when you're past a single-table `SELECT`. It covers the naming conventions Pro Cycling Manager
 follows, how to discover a database's actual schema in a few queries, and worked examples for
 the questions people usually ask.
 

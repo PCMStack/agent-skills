@@ -5,7 +5,7 @@ tells you where the data lives; this file tells you what you're allowed to put i
 value that's valid SQL can still be rejected by the write tool, silently clamped, or produce
 a `.cdb` the game refuses to load — and you only find that out after a full round trip.
 
-This list records what has actually been observed on official databases, not what Pro cycling manager's documentation
+This list records what has actually been observed on official databases, not what Pro Cycling Manager's documentation
 claims.
 
 ## Value ranges

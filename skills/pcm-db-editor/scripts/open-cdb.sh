@@ -2,7 +2,7 @@
 # Open a Pro Cycling Manager .cdb database for exploration: back it up, convert it to SQLite, and print a first
 # inventory of its tables. Safe to re-run — refuses to clobber an existing .sqlite output.
 #
-# Usage: open_cdb.sh <database.cdb> [output.sqlite]
+# Usage: open-cdb.sh <database.cdb> [output.sqlite]
 #
 # Requires Node 22+ (for npx cdb-converter) and sqlite3.
 

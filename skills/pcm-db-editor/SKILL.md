@@ -107,7 +107,7 @@ how tables relate instead of guessing, and it's round-trip safe. Costs ~10% time
 
 Add `--index-fk` only if you're running heavy JOINs on a big database — it roughly doubles the size.
 
-`scripts/open_cdb.sh` bundles the backup, the conversion and a first inventory of tables by
+`scripts/open-cdb.sh` bundles the backup, the conversion and a first inventory of tables by
 row count — a good starting point when you don't know the database yet.
 
 ### Starting from a `.sqlite` that's already converted
