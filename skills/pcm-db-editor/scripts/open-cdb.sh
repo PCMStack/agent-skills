@@ -25,6 +25,7 @@ if [[ -e "$OUT" ]]; then
 fi
 
 command -v sqlite3 >/dev/null || { echo "error: sqlite3 not found on PATH" >&2; exit 69; }
+command -v npx >/dev/null || { echo "error: npx not found on PATH — install Node 22+ (cdb-converter runs via npx)" >&2; exit 69; }
 
 # Keep an untouched copy before anything else.
 # The copy keeps the .cdb extension — the game only lists .cdb files, so a .bak backup
