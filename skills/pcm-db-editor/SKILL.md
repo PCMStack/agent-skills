@@ -121,7 +121,7 @@ sqlite3 database.sqlite "PRAGMA table_info(DYN_cyclist);"
 sqlite3 -header -column database.sqlite "SELECT ... LIMIT 20;"
 ```
 
-Read `references/pcm-schema.md` for the naming conventions (`DYN_` vs `STA_`, `IDx` /
+Read `references/database-schema.md` for the naming conventions (`DYN_` vs `STA_`, `IDx` /
 `fkIDx`, the `gene_sz_` prefix), the tables that answer most questions, and ready-made
 queries for rosters, ratings, contracts and free agents. Read it as soon as you're writing
 anything beyond a single-table `SELECT` — it will save you a round of trial and error.
