@@ -33,7 +33,7 @@ BAK="${CDB%.cdb}_backup.cdb"
 if [[ -e "$BAK" ]]; then
   echo "backup: $BAK already exists, keeping it"
 else
-  cp -- "$CDB" "$BAK"
+  cp -- "$CDB" "$BAK" 2>/dev/null || cp "$CDB" "$BAK"
   echo "backup: $BAK"
 fi
 
