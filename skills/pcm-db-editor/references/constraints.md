@@ -44,7 +44,7 @@ schema for the API name finds nothing and makes a column that exists look absent
 So search on the real prefix, not the API name:
 
 ```bash
-sqlite3 save.sqlite "SELECT name, type FROM pragma_table_info('DYN_cyclist') WHERE name LIKE '%mountain%';"
+sqlite3 database.sqlite "SELECT name, type FROM pragma_table_info('DYN_cyclist') WHERE name LIKE '%mountain%';"
 ```
 
 Nothing back means the column really isn't there — say so rather than writing an `UPDATE`

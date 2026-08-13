@@ -3,7 +3,7 @@ name: pcm-db-editor
 description: Open, explore and edit Pro Cycling Manager databases (.cdb) — rider ratings, team rosters, contracts, races. Routes between the pcm-mcp MCP server and a cdb → SQLite conversion via the cdb-converter CLI. Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
 ---
 
-# Pro Cycling Manager save & database editing
+# Pro Cycling Manager database editing
 
 Pro Cycling Manager stores everything — cyclists, teams, contracts, races, the whole game
 database — in a binary `.cdb` file. It is not readable as-is, but it is _exactly_ a SQLite
@@ -12,7 +12,12 @@ that, every PCM question becomes an ordinary SQL question.
 
 Your job is to pick the right door into that database, answer the question with real data
 (never from memory about how PCM "usually" works), and — if the user wants changes — write
-them back without ever putting their career at risk.
+them back without ever putting the original at risk.
+
+Two words are used precisely throughout this skill. A **database** is a `.cdb` file — it may
+be a player save, an official release or a community update, and nothing downstream cares
+which. A **save** is narrower: a `.cdb` the game itself wrote as the player played, found
+under a PCM edition's `Cloud/` folder. Say "save" only when that distinction matters.
 
 ## Which door to use
 
@@ -39,17 +44,19 @@ When Route A is available, let `pcm_list_saves` find the careers rather than gue
 install locations — it knows where this platform and game year put them. If it returns
 nothing, ask the user for the path instead of hunting through directories yourself.
 
-## The one rule that matters: never damage the save
+## The one rule that matters: never damage the original
 
-A PCM career can represent hundreds of hours. Treat the original `.cdb` as read-only, always:
+The database in front of you may be irreplaceable — a save can represent hundreds of hours of
+career, and a hand-tuned community update is no easier to rebuild. Treat the original `.cdb`
+as read-only, always:
 
-- **Back it up before touching anything.** `cp save.cdb save_backup.cdb` costs nothing.
-- **Write edits to a new file**, e.g. `save_edited.cdb` next to the original. The MCP write
+- **Back it up before touching anything.** `cp database.cdb database_backup.cdb` costs nothing.
+- **Write edits to a new file**, e.g. `database_edited.cdb` next to the original. The MCP write
   tools enforce this (they refuse to overwrite); on Route B _you_ enforce it.
-- **Watch the CLI's default output path.** `npx cdb-converter save.sqlite` writes to
-  `save.cdb` — which is very plausibly the user's original. Always pass an explicit output
+- **Watch the CLI's default output path.** `npx cdb-converter database.sqlite` writes to
+  `database.cdb` — which is very plausibly the user's original. Always pass an explicit output
   path on the way back.
-- Tell the user to load the edited save in-game and verify before deleting anything.
+- Tell the user to load the edited database in-game and verify before deleting anything.
 
 Before writing anything — either route — read `references/constraints.md`. It's the running
 list of what the game and the write tools actually accept.
@@ -57,8 +64,8 @@ list of what the game and the write tools actually accept.
 ## Route A — pcm-mcp
 
 Every `pcm_*` tool is stateless: it takes an absolute `savePath`, re-reads the `.cdb` into a
-fresh in-memory database, and answers. There's no "current save", so carry the path through
-the conversation yourself.
+fresh in-memory database, and answers. There's no implicitly current file, so carry the path
+through the conversation yourself.
 
 Typical flow:
 
@@ -90,18 +97,18 @@ by comparing file size or hash.
 ### Open
 
 ```bash
-cp save.cdb save_backup.cdb                           # backup first, always — keep .cdb
-npx -y cdb-converter save.cdb save.sqlite --normalize
+cp database.cdb database_backup.cdb                   # backup first, always — keep .cdb
+npx -y cdb-converter database.cdb database.sqlite --normalize
 ```
 
 `--normalize` reconstructs `PRIMARY KEY` / `FOREIGN KEY` constraints from PCM's naming
 conventions. Use it by default: it makes the database self-describing, so you can discover
 how tables relate instead of guessing, and it's round-trip safe. Costs ~10% time and ~40% size.
 
-Add `--index-fk` only if you're running heavy JOINs on a big save — it roughly doubles the size.
+Add `--index-fk` only if you're running heavy JOINs on a big database — it roughly doubles the size.
 
 `scripts/open_cdb.sh` bundles the backup, the conversion and a first inventory of tables by
-row count — a good starting point when you don't know the save yet.
+row count — a good starting point when you don't know the database yet.
 
 ### Explore
 
@@ -109,9 +116,9 @@ Use the `sqlite3` CLI (or any SQLite library). Discover before querying — PCM'
 varies across game years, so confirm names rather than trusting recall:
 
 ```bash
-sqlite3 save.sqlite ".tables"
-sqlite3 save.sqlite "PRAGMA table_info(DYN_cyclist);"
-sqlite3 -header -column save.sqlite "SELECT ... LIMIT 20;"
+sqlite3 database.sqlite ".tables"
+sqlite3 database.sqlite "PRAGMA table_info(DYN_cyclist);"
+sqlite3 -header -column database.sqlite "SELECT ... LIMIT 20;"
 ```
 
 Read `references/pcm-schema.md` for the naming conventions (`DYN_` vs `STA_`, `IDx` /
@@ -122,8 +129,8 @@ anything beyond a single-table `SELECT` — it will save you a round of trial an
 ### Edit and write back
 
 ```bash
-sqlite3 save.sqlite "UPDATE DYN_cyclist SET ... WHERE IDcyclist = 1234;"
-npx -y cdb-converter save.sqlite save_edited.cdb     # explicit output path!
+sqlite3 database.sqlite "UPDATE DYN_cyclist SET ... WHERE IDcyclist = 1234;"
+npx -y cdb-converter database.sqlite database_edited.cdb   # explicit output path!
 ```
 
 Two things break the round trip irrecoverably, so keep them in mind even without opening a
@@ -137,7 +144,7 @@ Then verify what you changed before handing it back — re-open the produced `.c
 `SELECT` the rows you touched:
 
 ```bash
-npx -y cdb-converter save_edited.cdb verify.sqlite
+npx -y cdb-converter database_edited.cdb verify.sqlite
 sqlite3 verify.sqlite "SELECT ... WHERE IDcyclist = 1234;"
 ```
 

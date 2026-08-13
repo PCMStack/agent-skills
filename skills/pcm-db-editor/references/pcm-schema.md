@@ -1,14 +1,14 @@
 # Database schema
 
 Read this when you're past a single-table `SELECT`. It covers the naming conventions Pro cycling manager
-follows, how to discover a save's actual schema in a few queries, and worked examples for
+follows, how to discover a database's actual schema in a few queries, and worked examples for
 the questions people usually ask.
 
 
 ## Contents
 
 - [Naming conventions](#naming-conventions)
-- [Discovering a save in four queries](#discovering-a-save-in-four-queries)
+- [Discovering a database in four queries](#discovering-a-database-in-four-queries)
 - [The tables that answer most questions](#the-tables-that-answer-most-questions)
 - [Rider ratings](#rider-ratings)
 - [Recipes](#recipes)
@@ -21,8 +21,8 @@ the questions people usually ask.
 | Pattern        | Meaning                                                                                                                          |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `STA_*`        | **Static** reference data — the game's catalogue: race definitions, countries, rider types, jersey data. Shared by every database.  |
-| `DYN_*`        | **Dynamic** save data — the state of _this_ save: cyclists, teams, contracts, results. This is what you edit.                   |
-| `GAM_*`        | **Game/session** state — the human player's account, save metadata, rewards. Small but this is where "my team" resolves.        |
+| `DYN_*`        | **Dynamic** data — the state of _this_ database: cyclists, teams, contracts, results. This is what you edit.                   |
+| `GAM_*`        | **Game/session** state — the human player's account, save metadata, rewards. Small, mostly meaningful in a save, but this is where "my team" resolves. |
 | `INF_*`        | Infrastructure/preset tables. Rarely edited.                                                                                                                          |
 
 ### Column names
@@ -39,9 +39,9 @@ the questions people usually ask.
 
 On Route B, converting with `cdb-converter --normalize` turns the `IDxxx` / `fkIDxxx` convention into real
 `PRIMARY KEY` / `FOREIGN KEY` constraints, which means `PRAGMA foreign_key_list(...)` will
-tell you how a table connects to the rest. That's the fastest way to map an unfamiliar save.
+tell you how a table connects to the rest. That's the fastest way to map an unfamiliar database.
 
-## Discovering a save in four queries
+## Discovering a database in four queries
 
 ```sql
 -- 1. What's in here? 
@@ -134,7 +134,7 @@ ORDER BY c.charac_i_sprint DESC;
 Prefer `fkIDteam` over `DYN_contract_cyclist` for "who rides for this team". Every rider
 carries an `fkIDteam`, but only a fraction of the database has a contract row — often well
 under a quarter of the field — so the contract join silently drops most riders. Compare
-`COUNT(*)` on both tables if you need the exact split for a given save. Bring contracts in
+`COUNT(*)` on both tables if you need the exact split for a given database. Bring contracts in
 when the question is about **terms** — wage, duration, role:
 
 ```sql
