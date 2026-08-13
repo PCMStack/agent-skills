@@ -58,7 +58,7 @@ as read-only, always:
   path on the way back.
 - Tell the user to load the edited database in-game and verify before deleting anything.
 
-Before writing anything — either route — read `references/constraints.md`. It's the running
+Before writing anything — either route — read `references/database-constraints.md`. It's the running
 list of what the game and the write tools actually accept.
 
 ## Route A — pcm-mcp
@@ -138,7 +138,7 @@ reference file: **no DDL** (`CREATE` / `ALTER` / `DROP` — a column's CDB type 
 encoded in its declared type string, so hand-made structure has no valid metadata and can't
 be converted back), and **never edit or drop `DB_STRUCTURE`** (converter metadata the game
 needs). Everything else — value ranges, column types, IDs and foreign keys for new rows — is
-in `references/constraints.md`, which you should have read before writing anyway.
+in `references/database-constraints.md`, which you should have read before writing anyway.
 
 Then verify what you changed before handing it back — re-open the produced `.cdb` and
 `SELECT` the rows you touched:

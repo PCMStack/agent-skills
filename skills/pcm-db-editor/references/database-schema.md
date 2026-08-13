@@ -4,7 +4,6 @@ Read this when you're past a single-table `SELECT`. It covers the naming convent
 follows, how to discover a database's actual schema in a few queries, and worked examples for
 the questions people usually ask.
 
-
 ## Contents
 
 - [Naming conventions](#naming-conventions)
@@ -18,24 +17,24 @@ the questions people usually ask.
 
 ### Table prefixes
 
-| Pattern        | Meaning                                                                                                                          |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `STA_*`        | **Static** reference data — the game's catalogue: race definitions, countries, rider types, jersey data. Shared by every database.  |
-| `DYN_*`        | **Dynamic** data — the state of _this_ database: cyclists, teams, contracts, results. This is what you edit.                   |
-| `GAM_*`        | **Game/session** state — the human player's account, save metadata, rewards. Small, mostly meaningful in a save, but this is where "my team" resolves. |
-| `INF_*`        | Infrastructure/preset tables. Rarely edited.                                                                                                                          |
+| Pattern | Meaning                                                                                                                                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `STA_*` | **Static** reference data — the game's catalogue: race definitions, countries, rider types, jersey data. Shared by every database.                     |
+| `DYN_*` | **Dynamic** data — the state of _this_ database: cyclists, teams, contracts, results. This is what you edit.                                           |
+| `GAM_*` | **Game/session** state — the human player's account, save metadata, rewards. Small, mostly meaningful in a save, but this is where "my team" resolves. |
+| `INF_*` | Infrastructure/preset tables. Rarely edited.                                                                                                           |
 
 ### Column names
 
-| Pattern                           | Meaning                                                                                                                           |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `IDxxx`                           | Primary key of table `xxx` (`IDcyclist` in `DYN_cyclist`, `IDteam` in `DYN_team`).                                                |
-| `fkIDxxx`                         | Foreign key pointing at `xxx.IDxxx` (`DYN_cyclist.fkIDteam` → `DYN_team.IDteam`).                                                 |
-| `gene_sz_*`                       | A general string field — `gene_sz_name` is the usual display name, `gene_sz_filename` a file stem. `sz` = zero-terminated string. |
-| `gene_strID_*`                    | A **localization key**, not display text. `STA_type_rider.gene_strID_name` is a token the game resolves to a translated label.    |
-| `charac_i_*`                      | A rider's **current ability** for one terrain. The 50–85 stats people mean by "ratings".                                          |
-| `limit_i_*`                       | The **potential ceiling** twin of the `charac_i_*` with the same suffix. Different scale — see [Rider ratings](#rider-ratings).   |
-| `gene_i_*`, `value_i_*`, `*_i_*`  | Integer fields. `value_f_*` / `gene_f_*` are floats, `gene_b_*` booleans, `*_ilist_*` text-encoded integer lists.                 |
+| Pattern                          | Meaning                                                                                                                           |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `IDxxx`                          | Primary key of table `xxx` (`IDcyclist` in `DYN_cyclist`, `IDteam` in `DYN_team`).                                                |
+| `fkIDxxx`                        | Foreign key pointing at `xxx.IDxxx` (`DYN_cyclist.fkIDteam` → `DYN_team.IDteam`).                                                 |
+| `gene_sz_*`                      | A general string field — `gene_sz_name` is the usual display name, `gene_sz_filename` a file stem. `sz` = zero-terminated string. |
+| `gene_strID_*`                   | A **localization key**, not display text. `STA_type_rider.gene_strID_name` is a token the game resolves to a translated label.    |
+| `charac_i_*`                     | A rider's **current ability** for one terrain. The 50–85 stats people mean by "ratings".                                          |
+| `limit_i_*`                      | The **potential ceiling** twin of the `charac_i_*` with the same suffix. Different scale — see [Rider ratings](#rider-ratings).   |
+| `gene_i_*`, `value_i_*`, `*_i_*` | Integer fields. `value_f_*` / `gene_f_*` are floats, `gene_b_*` booleans, `*_ilist_*` text-encoded integer lists.                 |
 
 On Route B, converting with `cdb-converter --normalize` turns the `IDxxx` / `fkIDxxx` convention into real
 `PRIMARY KEY` / `FOREIGN KEY` constraints, which means `PRAGMA foreign_key_list(...)` will
@@ -44,7 +43,7 @@ tell you how a table connects to the rest. That's the fastest way to map an unfa
 ## Discovering a database in four queries
 
 ```sql
--- 1. What's in here? 
+-- 1. What's in here?
 SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'DYN%' ORDER BY name;
 
 -- 2. What does this table hold?
@@ -59,7 +58,6 @@ SELECT name, type FROM pragma_table_info('DYN_cyclist') WHERE name LIKE '%mounta
 
 Query 4 is the workhorse: swap `%mountain%` for `%sprint%`, `%birth%`, `%wage%`, `%date%`
 and you'll find the right column in one shot instead of guessing.
-
 
 To find which table a concept lives in at all:
 
@@ -77,16 +75,15 @@ that rating on a 0–100 scale?).
 
 These names are stable across releases; their _columns_ still need checking.
 
-| Table                  | Holds                                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `DYN_cyclist`          | Every rider: `gene_sz_lastname`, `gene_sz_firstname`, `gene_i_birthdate`, `fkIDteam`, `fkIDtype_rider`, and the ability columns. Keyed by `IDcyclist`. |
-| `DYN_team`             | Teams: `gene_sz_name`, `gene_sz_shortname`, `fkIDdivision`, `fkIDcountry`, `value_f_current_evaluation`, `value_i_budget`. Keyed by `IDteam`. |
+| Table                  | Holds                                                                                                                                                                       |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DYN_cyclist`          | Every rider: `gene_sz_lastname`, `gene_sz_firstname`, `gene_i_birthdate`, `fkIDteam`, `fkIDtype_rider`, and the ability columns. Keyed by `IDcyclist`.                      |
+| `DYN_team`             | Teams: `gene_sz_name`, `gene_sz_shortname`, `fkIDdivision`, `fkIDcountry`, `value_f_current_evaluation`, `value_i_budget`. Keyed by `IDteam`.                               |
 | `DYN_contract_cyclist` | Rider ↔ team link: `fkIDcyclist`, `fkIDteam`, `finan_i_period_wage`, `iYearBegin`, `iYearEnd`, `iRole`, and `gene_b_active_contract` — the flag that picks the current one. |
-| `STA_type_rider`       | Rider archetypes (sprinter, climber, puncheur…). Labels are in `gene_strID_name`, a localization key rather than plain text.     |
-| `STA_race`             | Race definitions, including `gene_sz_filename`. Keyed by `IDrace`.      |
-| `GAM_user`             | The human player: `game_sz_login`, `game_sz_display_name`, `fkIDteam_duplicate`, `fkIDcyclist`. **The entry point for "my team".** |
-| `GAM_career_data`      | Career-level key/value metadata (`UID` / `value`).                                                                              |
-
+| `STA_type_rider`       | Rider archetypes (sprinter, climber, puncheur…). Labels are in `gene_strID_name`, a localization key rather than plain text.                                                |
+| `STA_race`             | Race definitions, including `gene_sz_filename`. Keyed by `IDrace`.                                                                                                          |
+| `GAM_user`             | The human player: `game_sz_login`, `game_sz_display_name`, `fkIDteam_duplicate`, `fkIDcyclist`. **The entry point for "my team".**                                          |
+| `GAM_career_data`      | Career-level key/value metadata (`UID` / `value`).                                                                                                                          |
 
 ## Rider ratings
 
@@ -107,7 +104,7 @@ Two nearby columns that look like ratings but aren't:
   computes it at runtime. Don't report it. Derive from the `charac_i_*` values instead.
 
 Value ranges, what happens if you exceed them, and the ability-vs-limit trap are covered in
-`constraints.md` — read it before writing any of these.
+`database-constraints.md` — read it before writing any of these.
 
 ## Recipes
 
@@ -217,7 +214,7 @@ SELECT IDcyclist, charac_i_sprint FROM DYN_cyclist WHERE IDcyclist = 5979;
 ```
 
 Whether a given _value_ is acceptable — the 50–85 band, the `limit_i_*` distinction, narrow
-integer column widths, what breaks the round trip — is in `constraints.md`. Read it before
+integer column widths, what breaks the round trip — is in `database-constraints.md`. Read it before
 step 2. What follows is about writing the statement itself:
 
 - **Never key an `UPDATE` on a name** when an ID is available — a `LIKE` that matches two
