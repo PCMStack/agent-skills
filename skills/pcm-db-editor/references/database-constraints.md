@@ -1,6 +1,6 @@
 # Database value constraints
 
-Read this **before writing any `UPDATE`, `INSERT`**. `pcm-schema.md`
+Read this **before writing any `UPDATE`, `INSERT`**. `database-schema.md`
 tells you where the data lives; this file tells you what you're allowed to put in it. A
 value that's valid SQL can still be rejected by the write tool, silently clamped, or produce
 a `.cdb` the game refuses to load — and you only find that out after a full round trip.
@@ -62,7 +62,7 @@ schema for the API name finds nothing and makes a column that exists look absent
 
 | pcm-mcp parameter  | Actual `DYN_cyclist` column                              |
 | ------------------ | -------------------------------------------------------- |
-| `mediumMountain`   | `charac_i_medium_mountain` (+ `limit_i_medium_mountain`)  |
+| `mediumMountain`   | `charac_i_medium_mountain` (+ `limit_i_medium_mountain`) |
 | `currentAbility`   | `value_f_current_ability`                                |
 | every other rating | `charac_i_<terrain>`                                     |
 
@@ -78,7 +78,7 @@ that matches zero rows and looks like success.
 One more trap: `value_f_current_ability` is `0.0` for **all** riders on the official
 release — the game computes it at runtime rather than storing it. Reporting it as a rider's
 current form gives the user a wall of zeros. Derive from the individual `charac_i_*` values
-instead. Note also that `value_f_potentiel` is a 0.5–6.0 star rating, *not* an ability on the
+instead. Note also that `value_f_potentiel` is a 0.5–6.0 star rating, _not_ an ability on the
 50–85 scale; the two are easy to confuse.
 
 ## Format-level rules
@@ -110,16 +110,16 @@ encoded = (tableId * 256 + columnIndex) * 16 + dataType
 
 So the data type is the **low 4 bits**, `encoded & 15`:
 
-| Value | CDB type        | Storage range              |
-| ----- | --------------- | -------------------------- |
-| 0     | `INTEGER`       | 32-bit signed              |
-| 1     | `FLOAT`         | 32-bit float               |
-| 2     | `STRING`        | text                       |
-| 3     | `BOOLEAN`       | bit-packed, 0/1            |
-| 4     | `INTEGER_BYTE`  | **signed −128…127**        |
-| 5     | `INTEGER_SHORT` | **signed −32768…32767**    |
-| 10    | `FLOAT_LIST`    | text-encoded list          |
-| 11    | `INTEGER_LIST`  | text-encoded list          |
+| Value | CDB type        | Storage range           |
+| ----- | --------------- | ----------------------- |
+| 0     | `INTEGER`       | 32-bit signed           |
+| 1     | `FLOAT`         | 32-bit float            |
+| 2     | `STRING`        | text                    |
+| 3     | `BOOLEAN`       | bit-packed, 0/1         |
+| 4     | `INTEGER_BYTE`  | **signed −128…127**     |
+| 5     | `INTEGER_SHORT` | **signed −32768…32767** |
+| 10    | `FLOAT_LIST`    | text-encoded list       |
+| 11    | `INTEGER_LIST`  | text-encoded list       |
 
 The narrow integer types are the ones that bite, so check before writing a large value:
 
