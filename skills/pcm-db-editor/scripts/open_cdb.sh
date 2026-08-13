@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Open a PCM .cdb save for exploration: back it up, convert it to SQLite, and print a first
+# Open a Pro Cycling Manager .cdb database for exploration: back it up, convert it to SQLite, and print a first
 # inventory of its tables. Safe to re-run — refuses to clobber an existing .sqlite output.
 #
-# Usage: open_cdb.sh <save.cdb> [output.sqlite]
+# Usage: open_cdb.sh <database.cdb> [output.sqlite]
 #
 # Requires Node 22+ (for npx cdb-converter) and sqlite3.
 
 set -euo pipefail
 
 if [[ $# -lt 1 || $# -gt 2 ]]; then
-  echo "usage: $0 <save.cdb> [output.sqlite]" >&2
+  echo "usage: $0 <database.cdb> [output.sqlite]" >&2
   exit 64
 fi
 
@@ -26,7 +26,7 @@ fi
 
 command -v sqlite3 >/dev/null || { echo "error: sqlite3 not found on PATH" >&2; exit 69; }
 
-# The original save is the user's career. Keep an untouched copy before anything else.
+# Keep an untouched copy before anything else.
 # The copy keeps the .cdb extension — the game only lists .cdb files, so a .bak backup
 # could never be loaded in-game.
 BAK="${CDB%.cdb}_backup.cdb"
@@ -43,7 +43,7 @@ npx -y cdb-converter "$CDB" "$OUT" --normalize
 echo "sqlite: $OUT"
 
 echo
-echo "Career tables (DYN_*) by row count:"
+echo "Database tables (DYN_*) by row count:"
 sqlite3 "$OUT" <<'SQL' |
 SELECT name FROM sqlite_master
 WHERE type = 'table' AND name LIKE 'DYN%'

@@ -16,45 +16,43 @@ them back without ever putting their career at risk.
 
 ## Which door to use
 
-There are two routes. Choose based on **where the file physically lives**, because that
-determines what can actually touch it:
+There are two routes, and one question settles the choice: **are the `pcm_*` tools in your
+tool list?** Look; don't assume.
 
-| Situation                                                                                                               | Route                           |
-| ----------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| The save is on the user's own machine (they give a path, or ask you to find their saves)                                | **Route A — pcm-mcp**           |
-| The `.cdb` was uploaded into the conversation, is in the working directory, or you can read it with your own file tools | **Route B — convert to SQLite** |
+- **Absent** → Route B. This is the common case. Say so once, then carry on — don't try to
+  install anything and don't block on it.
+- **Present** → Route A for lookups and one-off edits, falling back to Route B as soon as the
+  question outgrows the tools.
 
-The reasoning: pcm-mcp runs on the user's machine, so it can reach the game's own save
-directories, auto-discover careers, and write a new `.cdb` there. It cannot see a file that only exists in your
-sandbox. Conversely, the converter route works anywhere you can run `npx`, and gives you
-unrestricted SQL — including JOINs, aggregates and bulk edits the MCP tools don't expose.
+The tools decide it because of what each route can physically reach. pcm-mcp runs on the
+user's machine, so it can find the game's own save directories, discover careers, and write a
+new `.cdb` there — but it cannot see a file that exists only in your sandbox. Route B works
+anywhere you can read the file and run the converter, and gives you unrestricted SQL:
+JOINs, aggregates and bulk edits the MCP tools don't expose.
 
-If you're on Route A and the question outgrows the MCP tools — multi-table analysis,
-schema exploration, editing dozens of rows at once — say so and fall back to Route B on a
-copy of the file. That's a normal escalation, not a failure.
+Two consequences worth holding onto. If the `.cdb` was uploaded into the conversation or sits
+in your working directory, Route B is the only option no matter which tools you have. And if
+you're on Route A facing multi-table analysis, schema exploration, or edits across dozens of
+rows, say so and fall back to Route B on a copy — that's a normal escalation, not a failure.
 
-### Checking for pcm-mcp
-
-Route A needs the `pcm_*` tools to be present in your tool list. Look; don't assume.
-
-If they're absent, **mention it once and continue on Route B** — don't install anything and
-don't block on it:
-
-When they are present, let `pcm_list_saves` find the careers rather than guessing at install
-locations — it knows where this platform and game year put them. If it returns nothing, ask
-the user for the path instead of hunting through directories yourself.
+When Route A is available, let `pcm_list_saves` find the careers rather than guessing at
+install locations — it knows where this platform and game year put them. If it returns
+nothing, ask the user for the path instead of hunting through directories yourself.
 
 ## The one rule that matters: never damage the save
 
 A PCM career can represent hundreds of hours. Treat the original `.cdb` as read-only, always:
 
-- **Back it up before touching anything.** `cp save.cdb save_backup.cdb` costs nothing..
+- **Back it up before touching anything.** `cp save.cdb save_backup.cdb` costs nothing.
 - **Write edits to a new file**, e.g. `save_edited.cdb` next to the original. The MCP write
   tools enforce this (they refuse to overwrite); on Route B _you_ enforce it.
 - **Watch the CLI's default output path.** `npx cdb-converter save.sqlite` writes to
   `save.cdb` — which is very plausibly the user's original. Always pass an explicit output
   path on the way back.
 - Tell the user to load the edited save in-game and verify before deleting anything.
+
+Before writing anything — either route — read `references/constraints.md`. It's the running
+list of what the game and the write tools actually accept.
 
 ## Route A — pcm-mcp
 
@@ -84,6 +82,11 @@ The `cdb-converter` package does a **lossless** round trip: tables, column order
 data types and internal flags all survive `cdb → sqlite → cdb`, so the game reads the result
 happily.
 
+Lossless means the _data_ is preserved, not the bytes. A round-tripped file has a different
+checksum and is typically ~10% smaller than the original (compression differs), which looks
+alarming if you're checksum-comparing. Verify by querying the rebuilt file, as below — never
+by comparing file size or hash.
+
 ### Open
 
 ```bash
@@ -93,7 +96,7 @@ npx -y cdb-converter save.cdb save.sqlite --normalize
 
 `--normalize` reconstructs `PRIMARY KEY` / `FOREIGN KEY` constraints from PCM's naming
 conventions. Use it by default: it makes the database self-describing, so you can discover
-how tables relate instead of guessing, and it's round-trip safe . Costs ~10% time and ~40% size.
+how tables relate instead of guessing, and it's round-trip safe. Costs ~10% time and ~40% size.
 
 Add `--index-fk` only if you're running heavy JOINs on a big save — it roughly doubles the size.
 
@@ -123,17 +126,12 @@ sqlite3 save.sqlite "UPDATE DYN_cyclist SET ... WHERE IDcyclist = 1234;"
 npx -y cdb-converter save.sqlite save_edited.cdb     # explicit output path!
 ```
 
-Things that break the round trip, and why:
-
-- **No DDL.** `CREATE` / `ALTER` / `DROP` — the CDB data types and column indices are encoded
-  in each column's _declared type string_, so a table you create by hand has no valid
-  metadata and won't convert back. Change data, not structure.
-- **Leave `DB_STRUCTURE` alone.** That table carries per-table CDB flags whose meaning is
-  unknown but which the game needs. Don't edit or drop it.
-- **Respect the existing types.** Writing a string into an integer column, or a value beyond
-  a column's byte/short range, produces a file the game may reject.
-- **New rows need consistent IDs and foreign keys.** Pick an ID above the current max and
-  make sure every `fkID*` you set points at a row that exists.
+Two things break the round trip irrecoverably, so keep them in mind even without opening a
+reference file: **no DDL** (`CREATE` / `ALTER` / `DROP` — a column's CDB type and index are
+encoded in its declared type string, so hand-made structure has no valid metadata and can't
+be converted back), and **never edit or drop `DB_STRUCTURE`** (converter metadata the game
+needs). Everything else — value ranges, column types, IDs and foreign keys for new rows — is
+in `references/constraints.md`, which you should have read before writing anyway.
 
 Then verify what you changed before handing it back — re-open the produced `.cdb` and
 `SELECT` the rows you touched:
@@ -153,10 +151,3 @@ which file the user should load, and where their backup is. If a query returned 
 say so rather than filling the gap with plausible-looking PCM knowledge; an empty result
 usually means the column or table is named differently in that game year, and the fix is to
 go look at the schema again.
-
-
-
-### TODO CONSTRAINT
-Two constraints worth remembering so you don't waste a call: rating values are bounded
-55–85, and `mediumMountain` / `currentAbility` don't exist on older saves (they come back
-`null`, and setting `mediumMountain` is rejected there).
