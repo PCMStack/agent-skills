@@ -110,6 +110,29 @@ Add `--index-fk` only if you're running heavy JOINs on a big database — it rou
 `scripts/open_cdb.sh` bundles the backup, the conversion and a first inventory of tables by
 row count — a good starting point when you don't know the database yet.
 
+### Starting from a `.sqlite` that's already converted
+
+Sometimes the user hands you the SQLite file directly, or converted it in an earlier session.
+Don't re-convert and don't ask for the `.cdb` — pick up at **Explore**, with three checks first:
+
+```bash
+sqlite3 database.sqlite "SELECT COUNT(*) FROM DB_STRUCTURE;"   # must exist and be non-empty
+```
+
+If `DB_STRUCTURE` is missing or empty, the file did not come from `cdb-converter` (or it was
+rebuilt by hand) and **cannot be converted back** — say so and ask for the original `.cdb`.
+
+Second, the `.sqlite` is now the irreplaceable artefact: back it up (`cp database.sqlite
+database_backup.sqlite`) before editing, since there may be no `.cdb` to fall back on. Ask
+whether the original `.cdb` still exists; if it does, prefer backing that up too.
+
+Third, don't assume `--normalize` was used — if `PRAGMA foreign_key_list(DYN_cyclist);` comes
+back empty, the relations aren't declared and you have to read `references/database-schema.md`
+for the naming conventions rather than discovering them from the schema.
+
+Everything else is unchanged: same edit rules, and write back with an explicit `.cdb` output
+path (`npx -y cdb-converter database.sqlite database_edited.cdb`).
+
 ### Explore
 
 Use the `sqlite3` CLI (or any SQLite library). Discover before querying — PCM's schema
