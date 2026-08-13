@@ -9,6 +9,8 @@ the questions people usually ask.
 - [Naming conventions](#naming-conventions)
 - [Discovering a database in four queries](#discovering-a-database-in-four-queries)
 - [The tables that answer most questions](#the-tables-that-answer-most-questions)
+- [The save's configuration](#the-saves-configuration)
+  - [The current in-game date](#the-current-in-game-date)
 - [Rider ratings](#rider-ratings)
 - [Recipes](#recipes)
 - [Editing safely](#editing-safely)
@@ -84,6 +86,85 @@ These names are stable across releases; their _columns_ still need checking.
 | `STA_race`             | Race definitions, including `gene_sz_filename`. Keyed by `IDrace`.                                                                                                          |
 | `GAM_user`             | The human player: `game_sz_login`, `game_sz_display_name`, `fkIDteam_duplicate`, `fkIDcyclist`. **The entry point for "my team".**                                          |
 | `GAM_career_data`      | Career-level key/value metadata (`UID` / `value`).                                                                                                                          |
+| `GAM_config`           | The save's global configuration — **a single row** holding every setting chosen at career creation plus the progress state.                                                 |
+
+## The save's configuration
+
+One table, **exactly one row**: every setting chosen when the career was created, plus where
+that career has got to. Read it to identify a save — build, mod, mode, date — and edit it to
+change a setting on a career already under way (difficulty being the usual reason).
+
+```sql
+SELECT * FROM GAM_config;
+```
+
+Because there is a single row, no `WHERE` clause is needed to read it — and, for the same
+reason, an `UPDATE` without one rewrites the whole save's configuration. That is normally
+what you want here, and never what you want anywhere else.
+
+The columns worth knowing, with a real career as the example:
+
+| Column                                       | Example                        | Meaning                                                            |
+| -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ |
+| `game_i_starting_year`                       | `2025`                         | Season the career started in.                                      |
+| `gene_i_date`                                | `20250108`                     | Current in-game date, `YYYYMMDD` — 8 January 2025. See below.      |
+| `fkIDstage_current`                          | `1110`                         | Stage in progress → `STA_stage`, which points at the race and date. |
+| `game_sz_version`                            | `pcm25_shipping_01.09.02.555`  | The build that last wrote the save.                                |
+| `gene_sz_modname` / `gene_i_modid`           | `Default` / `0`                | Active mod; these values mean none.                                |
+| `fkIDgamemode`                               | `1`                            | Career vs. other modes.                                            |
+| `fkIDgame_state`                             | `2`                            | Where the save sits in the game's own state machine.               |
+| `fkIDdivision`                               | `0`                            | Division the player's team competes in.                            |
+| `game_i_is_over`                             | `0`                            | `0` = career still active.                                         |
+| `gene_b_multiplayer`, `gene_b_hardcoreMode`  | `0`, `0`                       | Solo, hardcore off.                                                |
+
+Two habits that keep this reliable:
+
+- **The `fkID*` columns are opaque integers.** Game mode, game state, division and the
+  difficulty settings all resolve against `STA_*` tables — join to get a label instead of
+  guessing what `2` means, and remember those labels are often `gene_strID_*` localization
+  keys rather than plain text.
+- **Confirm the column list per release.** The names above are stable in practice, but the
+  set is not exhaustive and shifts between editions. `PRAGMA table_info(GAM_config);` is one
+  query and settles it.
+
+### The current in-game date
+
+`gene_i_date` holds the current in-game date as a `YYYYMMDD` integer — `20260605` is
+5 June 2026:
+
+```sql
+SELECT gene_i_date FROM GAM_config;
+```
+
+This is the reference point for **any age- or season-relative computation**. The date
+advances as the game is played, so a career two seasons in is nowhere near the release's
+starting date, and today's real-world date is not a substitute.
+
+Two things to check before trusting the value:
+
+- **`0` means unknown, not year zero.** Fresh official releases that have never been played
+  store `0` here. Treat that sentinel as "no in-game date available" rather than parsing it.
+- **A non-zero value can still be junk.** Validate it as a real calendar date — split it into
+  year / month / day and reject impossible months and days — instead of assuming any integer
+  in the column is well-formed.
+
+When neither holds, say the date is unknown rather than falling back to the system clock.
+
+**Every date in the database uses this same `YYYYMMDD` integer encoding** —
+`DYN_cyclist.gene_i_birthdate` included, so `19980921` is 21 September 1998. Dates are never
+day counts, epoch seconds or text. That makes ages a direct subtraction of the two integers:
+
+```sql
+SELECT c.gene_sz_lastname,
+       (g.gene_i_date - c.gene_i_birthdate) / 10000 AS age
+FROM DYN_cyclist c, GAM_config g
+WHERE c.IDcyclist = 6777;
+```
+
+The integer division is what makes this correct: it only counts a birthday as passed once
+`MMDD` has caught up, so no off-by-one near the birthday. It is only valid when
+`gene_i_date` is non-zero and a real date — otherwise there's no reference point and the age
+is unknown, not "computed from today".
 
 ## Rider ratings
 

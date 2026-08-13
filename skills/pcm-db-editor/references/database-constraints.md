@@ -30,6 +30,31 @@ for the stat. These follow completely different rules, and the distribution is b
 limit is either **`0`** or a value in **60–84**. Nothing in between, and never below 60 — so
 the band is narrower than the 50–85 ability range and doesn't line up with it.
 
+## Dates are `YYYYMMDD` integers
+
+**Every date column in the database stores a `YYYYMMDD` integer** — never a day count, an
+epoch timestamp or a text date. `DYN_cyclist.gene_i_birthdate` is `19980921` for someone born
+on 21 September 1998; `GAM_config.gene_i_date`, the current in-game date, uses the same
+encoding.
+
+What this constrains when you write one:
+
+- **Write the full 8 digits.** `1998` or `0921` isn't a partial date, it's a different date —
+  the game reads the integer positionally.
+- **Zero-pad month and day.** September is `09`, not `9`: `1998921` parses as year 199, month
+  89, day 21.
+- **The value must be a real calendar date.** Month `13` or day `31` in February is stored
+  without complaint by SQLite and by the CDB writer, then misbehaves in-game.
+- **Range check the column first.** `YYYYMMDD` values exceed both `INTEGER_BYTE` and
+  `INTEGER_SHORT`, so a date column is necessarily a plain 32-bit `INTEGER` — if the encoded
+  type says otherwise, you have the wrong column. See
+  [Reading a column's real CDB type](#reading-a-columns-real-cdb-type).
+
+Reading one, the parts are plain arithmetic: `d / 10000` is the year, `(d / 100) % 100` the
+month, `d % 100` the day. Ages come out as `(gene_i_date - gene_i_birthdate) / 10000`, which
+handles the not-yet-had-their-birthday case on its own — but only when `gene_i_date` is
+non-zero, since a never-played official release stores `0` there.
+
 ## Columns whose names are not what the tools call them
 
 The pcm-mcp rating parameters are **camelCase API names, not database columns**. Grepping the
