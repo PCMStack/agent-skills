@@ -63,23 +63,23 @@ list of what the game and the write tools actually accept.
 
 ## Route A — pcm-mcp
 
-Every `pcm_*` tool is stateless: it takes an absolute `savePath`, re-reads the `.cdb` into a
-fresh in-memory database, and answers. There's no implicitly current file, so carry the path
-through the conversation yourself.
+Every `pcm_*` tool is stateless: it takes an absolute `databasePath`, re-reads the `.cdb`
+into a fresh in-memory database, and answers. There's no implicitly current file, so carry
+the path through the conversation yourself.
 
 Typical flow:
 
-1. **Locate** — `pcm_list_saves` to discover careers, or `pcm_validate_save <absolute path>`
+1. **Locate** — `pcm_list_saves` to discover careers, or `pcm_validate_database <absolute path>`
    when the user already gave you a file.
-2. **Explore** — `pcm_get_save_schema` / `pcm_get_table_schema` to learn the shape,
+2. **Explore** — `pcm_list_tables` / `pcm_get_table_schema` to learn the shape,
    `pcm_search_cyclist`, `pcm_search_team`, `pcm_get_team_roster`, `pcm_get_player_info`
-   for the common questions, `pcm_query_save` for anything else (read-only `SELECT` /
+   for the common questions, `pcm_query_database` for anything else (read-only `SELECT` /
    `WITH … SELECT`, capped at 1000 rows).
-3. **Edit** — `pcm_update_cyclist_ratings` for a rider's abilities, `pcm_update_save` for a
+3. **Edit** — `pcm_update_cyclist_ratings` for a rider's abilities, `pcm_update_database` for a
    single `INSERT`/`UPDATE`/`DELETE`. Both write to a new `outputPath` and refuse to
    overwrite. DDL and stacked statements are rejected.
 
-When a user wants several edits at once, note that `pcm_update_save` applies one statement
+When a user wants several edits at once, note that `pcm_update_database` applies one statement
 per call and each call produces a new file. Chaining three edits means three files. Past
 two or three changes, Route B is cleaner: do it all in SQLite, convert once.
 
