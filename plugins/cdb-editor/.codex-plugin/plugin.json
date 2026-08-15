@@ -34,7 +34,7 @@
     ],
     "websiteURL": "https://github.com/PCMStack/agent-skills",
     "defaultPrompt": [
-      "List my Pro Cycling Manager 2025 saves",
+      "List my Pro Cycling Manager saves",
       "Who's the best climber in my team?",
       "Which riders are out of contract next year?",
       "Build the startlist for the Tour de France"
