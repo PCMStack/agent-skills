@@ -1,5 +1,5 @@
 ---
-name: pcm-db-editor
+name: pcm-database
 description: Open, explore and edit Pro Cycling Manager databases (.cdb) — rider ratings, team rosters, contracts, races. Routes between the pcm-mcp MCP server and a cdb → SQLite conversion via the cdb-converter CLI. Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
 ---
 

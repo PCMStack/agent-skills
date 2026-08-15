@@ -1,6 +1,6 @@
 {
   "name": "pcm",
-  "displayName": "PCM",
+  "displayName": "Pro Cycling Manager",
   "version": "0.1.0",
   "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports. Unofficial, not affiliated with Cyanide Studio or Nacon.",
   "author": {

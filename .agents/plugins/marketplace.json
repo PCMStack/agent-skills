@@ -6,6 +6,9 @@
   "plugins": [
     {
       "name": "pcm",
+      "interface": {
+        "displayName": "Pro Cycling Manager"
+      },
       "source": {
         "source": "local",
         "path": "./plugins/pcm"
