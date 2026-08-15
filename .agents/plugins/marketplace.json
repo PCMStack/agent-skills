@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "cdb-editor",
+      "name": "pcm",
       "source": {
         "source": "local",
-        "path": "./plugins/cdb-editor"
+        "path": "./plugins/pcm"
       },
       "policy": {
         "installation": "AVAILABLE",
