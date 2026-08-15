@@ -28,6 +28,20 @@ skills/
     lib/                  # Optional: shared code for scripts
 ```
 
+### Plugin Manifests
+
+Plugin metadata is duplicated across several manifests, one per agent format. When you change
+a plugin's name, description, version or category, update **all** of these together — nothing
+validates them against each other:
+
+- `.claude-plugin/marketplace.json` — marketplace entry (Claude)
+- `.agents/plugins/marketplace.json` — marketplace entry (Agents format)
+- `plugins/{plugin}/.claude-plugin/plugin.json` — plugin manifest (Claude)
+- `plugins/{plugin}/.codex-plugin/plugin.json` — plugin manifest (Codex), including the
+  longer `interface.longDescription`
+
+The plugin `description` is kept byte-identical across the manifests that carry it.
+
 ### Naming Conventions
 
 - **Skill directory**: `kebab-case` (e.g., `pcm-db-editor`)
