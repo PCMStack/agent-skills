@@ -1,0 +1,25 @@
+{
+  "name": "cdb-editor",
+  "displayName": "CDB Editor",
+  "version": "0.1.0",
+  "description": "Community tooling for Pro Cycling Manager: explore and edit game databases (.cdb) and build race startlists. Unofficial, not affiliated with Cyanide Studio or Nacon.",
+  "author": {
+    "name": "PCMStack",
+    "url": "https://github.com/PCMStack"
+  },
+  "homepage": "https://github.com/PCMStack/agent-skills",
+  "repository": "https://github.com/PCMStack/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "pro-cycling-manager",
+    "pcm",
+    "cycling",
+    "cdb",
+    "sqlite",
+    "database",
+    "startlist",
+    "modding"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

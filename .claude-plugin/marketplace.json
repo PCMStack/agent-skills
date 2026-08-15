@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "pcmstack",
+  "description": "Community tooling for Pro Cycling Manager. Unofficial, not affiliated with Cyanide Studio or Nacon.",
+  "owner": {
+    "name": "PCMStack",
+    "url": "https://github.com/PCMStack"
+  },
+  "plugins": [
+    {
+      "name": "cdb-editor",
+      "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports.",
+      "category": "database",
+      "source": "./plugins/cdb-editor"
+    }
+  ]
+}

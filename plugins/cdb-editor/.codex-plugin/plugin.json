@@ -1,5 +1,5 @@
 {
-  "name": "pcmstack",
+  "name": "cdb-editor",
   "version": "0.1.0",
   "description": "Community tooling for Pro Cycling Manager: explore and edit game databases (.cdb) and build race startlists. Unofficial, not affiliated with Cyanide Studio or Nacon.",
   "author": {
@@ -22,7 +22,7 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "PCMStack",
+    "displayName": "CDB Editor",
     "shortDescription": "Edit Pro Cycling Manager databases and build race startlists",
     "longDescription": "Community tooling for Pro Cycling Manager. Open and edit the game database (.cdb) — rider ratings, team rosters, contracts, races — via the pcm-mcp MCP server or a lossless CDB to SQLite conversion, and compose race startlists exported as the .xml file the game imports. Unofficial project, not affiliated with or endorsed by Cyanide Studio or Nacon.",
     "developerName": "PCMStack",
@@ -33,7 +33,12 @@
       "Write"
     ],
     "websiteURL": "https://github.com/PCMStack/agent-skills",
-    "defaultPrompt": "Explore or edit a Pro Cycling Manager database, or build a startlist for a race",
+    "defaultPrompt": [
+      "List my Pro Cycling Manager 2025 saves",
+      "Who's the best climber in my team?",
+      "Which riders are out of contract next year?",
+      "Build the startlist for the Tour de France"
+    ],
     "brandColor": "#ffd21e",
     "composerIcon": "./assets/logo.svg",
     "logo": "./assets/app-icon.png",
