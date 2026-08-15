@@ -2,7 +2,7 @@
   "name": "cdb-editor",
   "displayName": "CDB Editor",
   "version": "0.1.0",
-  "description": "Community tooling for Pro Cycling Manager: explore and edit game databases (.cdb) and build race startlists. Unofficial, not affiliated with Cyanide Studio or Nacon.",
+  "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports. Unofficial, not affiliated with Cyanide Studio or Nacon.",
   "author": {
     "name": "PCMStack",
     "url": "https://github.com/PCMStack"

@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "cdb-editor",
-      "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports.",
+      "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports. Unofficial, not affiliated with Cyanide Studio or Nacon.",
       "category": "Developer Tools",
       "source": "./plugins/cdb-editor"
     }
