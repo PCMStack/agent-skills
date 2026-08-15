@@ -1,0 +1,25 @@
+{
+  "name": "pcm",
+  "displayName": "Pro Cycling Manager",
+  "version": "0.1.0",
+  "description": "Explore and edit Pro Cycling Manager game databases (.cdb) — rider ratings, team rosters, contracts, races — and build race startlists exported as the .xml file the game imports. Unofficial, not affiliated with Cyanide Studio or Nacon.",
+  "author": {
+    "name": "PCMStack",
+    "url": "https://github.com/PCMStack"
+  },
+  "homepage": "https://github.com/PCMStack/agent-skills",
+  "repository": "https://github.com/PCMStack/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "pro-cycling-manager",
+    "pcm",
+    "cycling",
+    "cdb",
+    "sqlite",
+    "database",
+    "startlist",
+    "modding"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}
