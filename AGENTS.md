@@ -26,7 +26,7 @@ Key formats and technologies:
 .claude-plugin/marketplace.json   # Claude Code marketplace definition
 .agents/plugins/marketplace.json  # Codex/agents marketplace definition
 plugins/
-  pcm/
+  db-editor/
     .claude-plugin/plugin.json    # Claude Code plugin manifest
     .codex-plugin/plugin.json     # Codex plugin manifest (adds `interface` block)
     .mcp.json                     # MCP servers bundled with the plugin (pcm-mcp)
@@ -43,7 +43,7 @@ README.md                         # human-facing overview + quickstart; detailed
 ```
 
 Skills live **inside a plugin** (`plugins/{plugin}/skills/{skill}/`), not at the repo root.
-The only plugin is `pcm`, containing `pcm-database` and `pcm-startlist`.
+The only plugin is `db-editor`, containing `pcm-database` and `pcm-startlist`.
 
 ## Setup Commands
 
@@ -65,13 +65,13 @@ Install the marketplace locally in Claude Code to test plugin changes:
 
 ```
 /plugin marketplace add /Users/<you>/Dev/agent-skills
-/plugin install pcm@pcmstack
+/plugin install db-editor@pcmstack
 ```
 
 Then exercise the skill with realistic prompts (e.g. "who's the best climber in my team?",
 "build the startlist for the Tour de France") and check that it triggers _and_ that the
 instructions hold up. The `defaultPrompt` array in
-[plugins/pcm/.codex-plugin/plugin.json](plugins/pcm/.codex-plugin/plugin.json) is a good
+[plugins/db-editor/.codex-plugin/plugin.json](plugins/db-editor/.codex-plugin/plugin.json) is a good
 source of test prompts.
 
 Prefer the `/skill-creator:skill-creator` skill (if available in your agent environment,
@@ -84,7 +84,7 @@ Then apply the repository conventions below to the result.
 There is no automated test suite. "Testing" here means validation plus behavioural checks:
 
 ```bash
-bash -n plugins/pcm/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
+bash -n plugins/db-editor/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
 python3 -m json.tool <file>.json > /dev/null                  # validate each JSON manifest
 npx prettier --check "**/*.{md,json}"                         # formatting
 ```
@@ -106,7 +106,7 @@ Behavioural checks that matter more than the above:
 
 ### Naming Conventions
 
-- **Plugin directory**: `kebab-case` (e.g. `pcm`), matching `name` in both plugin manifests.
+- **Plugin directory**: `kebab-case` (e.g. `db-editor`), matching `name` in both plugin manifests.
 - **Skill directory**: `kebab-case` (e.g. `pcm-database`), matching `name` in its frontmatter.
 - **SKILL.md**: always uppercase, always this exact filename.
 - **Scripts**: `kebab-case.sh` or `kebab-case.mjs` (e.g. `open-cdb.sh`).
@@ -155,7 +155,7 @@ Consequences worth remembering:
 - Adding a new plugin means a new `plugins/{name}/` directory **plus** entries in both
   `.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json`.
 - Plugin assets are resolved relative to the plugin directory, which is why `assets/` lives
-  under `plugins/pcm/` rather than at the repo root.
+  under `plugins/db-editor/` rather than at the repo root.
 
 ## Pull Request Guidelines
 
