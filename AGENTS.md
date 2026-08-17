@@ -39,7 +39,7 @@ plugins/
       pcm-startlist/
         SKILL.md
 AGENTS.md / CLAUDE.md             # CLAUDE.md is a one-line `@AGENTS.md` include
-README.md                         # human-facing; keep it short, guidance lives here
+README.md                         # human-facing overview + quickstart; detailed guidance lives in AGENTS.md
 ```
 
 Skills live **inside a plugin** (`plugins/{plugin}/skills/{skill}/`), not at the repo root.
