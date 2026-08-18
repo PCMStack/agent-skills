@@ -5,13 +5,13 @@
   },
   "plugins": [
     {
-      "name": "pcm",
+      "name": "db-editor",
       "interface": {
-        "displayName": "Pro Cycling Manager"
+        "displayName": "DB Editor"
       },
       "source": {
         "source": "local",
-        "path": "./plugins/pcm"
+        "path": "./plugins/db-editor"
       },
       "policy": {
         "installation": "AVAILABLE",

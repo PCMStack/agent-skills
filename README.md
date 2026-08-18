@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="plugins/pcm/assets/logo.svg" alt="PCMStack" width="96">
+  <img src="plugins/db-editor/assets/logo.svg" alt="PCMStack" width="96">
 
 # PCMStack Agent Skills
 
@@ -28,11 +28,11 @@ You  ▸ Build the startlist for Almería — 20 teams, sprinters up front
 
 ## Install
 
-The repository is a marketplace containing a single plugin, `pcm`. In **Claude Code**:
+The repository is a marketplace containing a single plugin, `db-editor`. In **Claude Code**:
 
 ```
 /plugin marketplace add PCMStack/agent-skills
-/plugin install pcm@pcmstack
+/plugin install db-editor@pcmstack
 ```
 
 Then just ask. Skills trigger on their own when a request matches — no command to remember.
@@ -41,7 +41,7 @@ Then just ask. Skills trigger on their own when a request matches — no command
 <summary>Other agents</summary>
 
 The skills follow the portable `SKILL.md` format, so any agent that reads Agent Skills can
-use them. Point your agent at `plugins/pcm/skills/`, or clone the repository and add it as a
+use them. Point your agent at `plugins/db-editor/skills/`, or clone the repository and add it as a
 local marketplace:
 
 ```
@@ -49,7 +49,7 @@ local marketplace:
 ```
 
 Codex-compatible manifests live in `.agents/plugins/marketplace.json` and
-`plugins/pcm/.codex-plugin/plugin.json`.
+`plugins/db-editor/.codex-plugin/plugin.json`.
 
 </details>
 
@@ -111,7 +111,7 @@ manifests, read by another agent at runtime.
 ```
 .claude-plugin/marketplace.json    # Claude Code marketplace
 .agents/plugins/marketplace.json   # Codex/agents marketplace
-plugins/pcm/
+plugins/db-editor/
   .claude-plugin/plugin.json       # plugin manifest
   .codex-plugin/plugin.json        # plugin manifest (Codex, adds `interface`)
   .mcp.json                        # bundled MCP servers
@@ -130,7 +130,7 @@ realistic prompts and check they trigger on paraphrases — a description that m
 Validation before opening a PR:
 
 ```bash
-bash -n plugins/pcm/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
+bash -n plugins/db-editor/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
 python3 -m json.tool <file>.json > /dev/null                  # validate manifests
 npx prettier --check "**/*.{md,json}"                         # formatting
 ```
