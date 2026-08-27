@@ -90,8 +90,6 @@ pushing:
 ```bash
 claude plugin validate --strict .                    # marketplace manifest
 claude plugin validate --strict plugins/db-editor    # plugin manifest + its skills
-python3 -m json.tool <file>.json > /dev/null         # Codex manifests, which have no validator
-bash -n plugins/db-editor/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
 npx prettier --check "**/*.{md,json}"                # formatting
 ```
 
