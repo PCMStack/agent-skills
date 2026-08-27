@@ -1,0 +1,2 @@
+# Local, machine-specific permission state — not part of the repo.
+.claude/settings.local.json

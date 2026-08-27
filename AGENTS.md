@@ -23,6 +23,7 @@ Key formats and technologies:
 ### Repository Layout
 
 ```
+.github/workflows/validate.yml    # CI: manifest validation, bash -n, prettier
 .claude-plugin/marketplace.json   # Claude Code marketplace definition
 .agents/plugins/marketplace.json  # Codex/agents marketplace definition
 plugins/
@@ -81,13 +82,24 @@ Then apply the repository conventions below to the result.
 
 ## Testing Instructions
 
-There is no automated test suite. "Testing" here means validation plus behavioural checks:
+There is no automated test suite. "Testing" here means validation plus behavioural checks.
+The validation half runs in CI on every PR and every push to `main`
+([.github/workflows/validate.yml](.github/workflows/validate.yml)); run it locally before
+pushing:
 
 ```bash
+claude plugin validate --strict .                    # marketplace manifest
+claude plugin validate --strict plugins/db-editor    # plugin manifest + its skills
+python3 -m json.tool <file>.json > /dev/null         # Codex manifests, which have no validator
 bash -n plugins/db-editor/skills/pcm-database/scripts/open-cdb.sh   # syntax-check scripts
-python3 -m json.tool <file>.json > /dev/null                  # validate each JSON manifest
-npx prettier --check "**/*.{md,json}"                         # formatting
+npx prettier --check "**/*.{md,json}"                # formatting
 ```
+
+`claude plugin validate` is an offline schema check — no API key, no network. It stops at the
+first manifest it finds, so `.` only ever validates the marketplace: the plugin directory needs
+its own invocation. Pointing it at a skill directory fails ("No manifest found"); skills are
+validated through their plugin. `--strict` turns warnings the runtime tolerates — unrecognized
+fields, missing metadata — into failures, which is what you want before a manifest ships.
 
 Behavioural checks that matter more than the above:
 
@@ -162,9 +174,10 @@ Consequences worth remembering:
 - Commit and PR titles follow Conventional Commits: `feat:`, `docs:`, `fix:` — e.g.
   `feat: add pcm-startlist skill`.
 - One skill or one coherent change per PR.
-- Before opening: JSON manifests parse, scripts pass `bash -n`, and the skill has been
-  exercised against at least a few realistic prompts. Say in the PR description what you
-  tested it with.
+- Before opening: `claude plugin validate --strict` passes on the repo root and on each
+  plugin directory, scripts pass `bash -n`, and the skill has been exercised against at least
+  a few realistic prompts. Say in the PR description what you tested it with. CI runs the
+  first two for you, but not the prompts.
 - Branch off `main`; `main` is the release branch.
 
 ## Security and Data Handling

@@ -27,11 +27,7 @@
     "longDescription": "Community tooling for Pro Cycling Manager. Open and edit the game database (.cdb) — rider ratings, team rosters, contracts, races — via the pcm-mcp MCP server or a lossless CDB to SQLite conversion, and compose race startlists exported as the .xml file the game imports. Unofficial project, not affiliated with or endorsed by Cyanide Studio or Nacon.",
     "developerName": "PCMStack",
     "category": "Developer Tools",
-    "capabilities": [
-      "Interactive",
-      "Read",
-      "Write"
-    ],
+    "capabilities": ["Interactive", "Read", "Write"],
     "websiteURL": "https://github.com/PCMStack/agent-skills",
     "defaultPrompt": [
       "List my Pro Cycling Manager saves",

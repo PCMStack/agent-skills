@@ -104,18 +104,18 @@ what you want here, and never what you want anywhere else.
 
 The columns worth knowing, with a real career as the example:
 
-| Column                                       | Example                        | Meaning                                                            |
-| -------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ |
-| `game_i_starting_year`                       | `2025`                         | Season the career started in.                                      |
-| `gene_i_date`                                | `20250108`                     | Current in-game date, `YYYYMMDD` — 8 January 2025. See below.      |
-| `fkIDstage_current`                          | `1110`                         | Stage in progress → `STA_stage`, which points at the race and date. |
-| `game_sz_version`                            | `pcm25_shipping_01.09.02.555`  | The build that last wrote the save.                                |
-| `gene_sz_modname` / `gene_i_modid`           | `Default` / `0`                | Active mod; these values mean none.                                |
-| `fkIDgamemode`                               | `1`                            | Career vs. other modes.                                            |
-| `fkIDgame_state`                             | `2`                            | Where the save sits in the game's own state machine.               |
-| `fkIDdivision`                               | `0`                            | Division the player's team competes in.                            |
-| `game_i_is_over`                             | `0`                            | `0` = career still active.                                         |
-| `gene_b_multiplayer`, `gene_b_hardcoreMode`  | `0`, `0`                       | Solo, hardcore off.                                                |
+| Column                                      | Example                       | Meaning                                                             |
+| ------------------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `game_i_starting_year`                      | `2025`                        | Season the career started in.                                       |
+| `gene_i_date`                               | `20250108`                    | Current in-game date, `YYYYMMDD` — 8 January 2025. See below.       |
+| `fkIDstage_current`                         | `1110`                        | Stage in progress → `STA_stage`, which points at the race and date. |
+| `game_sz_version`                           | `pcm25_shipping_01.09.02.555` | The build that last wrote the save.                                 |
+| `gene_sz_modname` / `gene_i_modid`          | `Default` / `0`               | Active mod; these values mean none.                                 |
+| `fkIDgamemode`                              | `1`                           | Career vs. other modes.                                             |
+| `fkIDgame_state`                            | `2`                           | Where the save sits in the game's own state machine.                |
+| `fkIDdivision`                              | `0`                           | Division the player's team competes in.                             |
+| `game_i_is_over`                            | `0`                           | `0` = career still active.                                          |
+| `gene_b_multiplayer`, `gene_b_hardcoreMode` | `0`, `0`                      | Solo, hardcore off.                                                 |
 
 Two habits that keep this reliable:
 

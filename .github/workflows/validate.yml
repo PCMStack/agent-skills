@@ -1,0 +1,32 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate marketplace manifest
+        run: claude plugin validate --strict .
+
+      - name: Validate plugin manifests
+        run: |
+          for plugin in plugins/*/; do
+            echo "==> $plugin"
+            claude plugin validate --strict "$plugin"
+          done
+
+      - name: Check formatting
+        run: npx --yes prettier --check "**/*.{md,json}"
