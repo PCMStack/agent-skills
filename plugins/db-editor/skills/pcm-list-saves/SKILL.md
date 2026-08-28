@@ -3,9 +3,8 @@ name: pcm-list-saves
 description: >-
   Find every Pro Cycling Manager save (.cdb) on the player's own machine and list them
   grouped by game edition (PCM 2023, 2024, 2025…), newest first, with profile, size, last
-  played date and absolute path. Uses the pcm_list_saves MCP tool when it is available, and
-  falls back to a filesystem scan otherwise. Use this skill whenever someone asks where their
-  PCM saves are, wants to see or choose among them, mentions having several saves or several
+  played date and absolute path. Use this skill whenever someone asks where their PCM saves
+  are, wants to see or choose among them, mentions having several saves or several
   editions of the game, or asks a question about "my save" / "my career" / "my team" without
   giving a file path — locate the save first, so the absolute path is available for whatever
   comes next. Triggers on "list my saves", "where are my PCM saves", "find my career",

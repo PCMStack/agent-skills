@@ -130,6 +130,15 @@ Behavioural checks that matter more than the above:
   descriptions list trigger phrases explicitly — follow that pattern.
 - Body is prose in the second person addressed to the agent, explaining _why_ a rule exists,
   not just the rule. Lead with the decision the agent has to make.
+- **Route to the MCP tool first, and say so in the body — never in the `description`.** When
+  a `pcm_*` tool covers what a bundled script does, the tool wins: it is faster, it enforces
+  the never-overwrite rules itself, and it doesn't depend on the user's shell. State the
+  order plainly ("if `pcm_list_saves` is in your tool list, call it first"), then give the
+  script as the fallback for when the tool is absent, returns nothing, or errors — a skill
+  that assumes the server is running breaks for anyone who installed the skill alone. Keep
+  all of that in the body: the `description` names the _domain_ ("open and edit PCM `.cdb`
+  databases"), not the routing mechanics. Routing in the description is read at match time,
+  when it's useless, and its tool names pollute the trigger surface.
 - Keep `SKILL.md` focused; push long schema dumps and constraint lists into `references/` and
   point at them from the body so they load on demand.
 - **Each skill must stand on its own.** The unit that travels is the skill _directory_ —
