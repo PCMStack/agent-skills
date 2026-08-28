@@ -132,6 +132,21 @@ Behavioural checks that matter more than the above:
   not just the rule. Lead with the decision the agent has to make.
 - Keep `SKILL.md` focused; push long schema dumps and constraint lists into `references/` and
   point at them from the body so they load on demand.
+- **Each skill must stand on its own.** The unit that travels is the skill _directory_ —
+  `SKILL.md` plus its own `scripts/` and `references/`. Write as if that directory had been
+  copied somewhere on its own, with no plugin, no marketplace and no sibling skills around
+  it. So:
+  - Don't name another skill — not in the `description`, not as a hand-off, not to borrow a definition. Skills are matched and loaded
+    independently, so a named sibling may simply not be there, and renaming one silently
+    breaks the others. Say what the agent needs to carry forward (an absolute `.cdb` path,
+    usually) and let the next skill trigger on its own.
+  - Don't mention the plugin, the marketplace, or anything else the skill happens to ship
+    inside — no "the `pcm-mcp` server bundled with this plugin". Treat an MCP tool as
+    something that may or may not be in the tool list, and give the fallback for when it
+    isn't.
+  - Referring to a _tool_ by name (`pcm_list_saves`) or to a file inside the skill's own
+    directory (`scripts/find-saves.sh`, `references/database-schema.md`) is fine — both
+    travel with the skill.
 - Wrap Markdown at ~95 characters, matching the existing files.
 
 ### Shell scripts

@@ -4,36 +4,31 @@ description: >-
   Find every Pro Cycling Manager save (.cdb) on the player's own machine and list them
   grouped by game edition (PCM 2023, 2024, 2025…), newest first, with profile, size, last
   played date and absolute path. Uses the pcm_list_saves MCP tool when it is available, and
-  falls back to a bundled filesystem scan otherwise. Use this skill whenever someone asks
-  where their PCM saves are, wants to see or choose among their careers, mentions having
-  several saves or several editions of the game, or asks a question about "my save" / "my
-  career" / "my team" without giving a file path — locate the save first, then hand the path
-  to pcm-database. Triggers on "list my saves", "where are my PCM saves", "find my career",
-  "show my careers", "which save should I open", "I have several saves".
+  falls back to a filesystem scan otherwise. Use this skill whenever someone asks where their
+  PCM saves are, wants to see or choose among them, mentions having several saves or several
+  editions of the game, or asks a question about "my save" / "my career" / "my team" without
+  giving a file path — locate the save first, so the absolute path is available for whatever
+  comes next. Triggers on "list my saves", "where are my PCM saves", "find my career",
+  "which save should I open", "I have several saves", "open my last save".
 ---
 
 # Finding Pro Cycling Manager saves on this machine
 
-Pro Cycling Manager writes each career to a `.cdb` file somewhere under a
+Pro Cycling Manager writes each saves to a `.cdb` file somewhere under a
 `Pro Cycling Manager <year>` folder on the player's computer. Your job is to find all of
 them, across every edition installed, and present them clearly enough that the user can say
 "that one" — because almost every other PCM task starts with an absolute path to a `.cdb`,
-and guessing that path wastes everyone's time.
-
-Two words from `pcm-database` are used precisely here. A **save** is a `.cdb` the game wrote
-as the player played, living under an edition's `Cloud/<profile>/` folder. Any other `.cdb`
-under the edition folder is the shipped game database or a community update — real, worth
-mentioning, but not a career. Keep them apart in what you report; a user asking for "my
-saves" who gets handed the stock database will load it and find their career gone.
+and guessing that path wastes everyone's time. A **save** is a `.cdb` the game wrote as the
+player played, living under an edition's `Cloud/<profile>/` folder.
 
 ## Try the MCP tool first, then the script
 
-Look at your tool list. If `pcm_list_saves` is there — the `pcm-mcp` server is bundled with
-this plugin, so it usually is — call it first. It is the fastest path to an answer and it
-returns the same facts this skill reports: profile, file, size, last played, absolute path.
+Look at your tool list. If `pcm_list_saves` is there, call it first: it is the fastest path
+to an answer and it returns the same facts this skill reports — profile, file, size, last
+played, absolute path.
 
-Fall back to the bundled script whenever the MCP tool isn't available, returns nothing, or
-errors:
+Fall back to the script that ships with this skill whenever that tool isn't available,
+returns nothing, or errors:
 
 ```bash
 scripts/find-saves.sh
@@ -71,12 +66,12 @@ machine (they may have been playing on another one).
 
 Group by edition, newest edition first, and within an edition put the most recently played
 save first — that ordering is doing real work, because the top entry is almost always the
-career the user means by "my save". The script already sorts this way, so lean on its output
+save the user means by "my save". The script already sorts this way, so lean on its output
 rather than re-deriving an order.
 
 For each save give the file name, the profile it belongs to, its size, when it was last
 written, and the absolute path. The date is the useful discriminator when someone has five
-saves with names like `save1.cdb` — it is the last time that career was played. The path
+saves with names like `save1.cdb` — it is the last time that save was played. The path
 matters because it's what every other tool needs next.
 
 Keep it to a compact table or list. If a single edition has a dozen saves, show them all —
@@ -84,15 +79,15 @@ the user asked for all of them — but don't pad each one with commentary.
 
 Be honest about what the file names tell you, which is very little. PCM save names are
 whatever the player typed, so a file called `Tour 2024.cdb` may hold any team in any season.
-If the user needs to know which career is which — team, year, rider — that is a question
-about the _contents_, and it means opening the database.
+If the user needs to know which save is which — team, year, mode, season — that is a
+question about the _contents_, and it means opening the database.
 
 ## Handing off
 
-Finding the save is usually step one of something bigger. Once the user picks one, carry the
-absolute path forward and switch to `pcm-database` to open it, or `pcm-startlist` if they
-want a race startlist. Don't re-run discovery later in the conversation; keep the path in
-context, since those tools are stateless and need it on every call.
+Finding the save is usually step one of something bigger. Once the user picks one, carry its
+absolute path forward and use it for whatever they actually wanted to do with that save.
+Don't re-run discovery later in the conversation; keep the path in context, since anything
+that reads a `.cdb` is stateless and needs it on every call.
 
 ## MCP tool vs. script, in one line
 
