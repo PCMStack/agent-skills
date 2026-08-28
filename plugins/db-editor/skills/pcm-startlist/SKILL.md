@@ -40,8 +40,8 @@ Every step reads a `.cdb` database — a player save, an official release or a
 community update, it makes no difference. If the user hasn't given an absolute
 `databasePath`:
 
-- Try `pcm_list_saves` to find their saves (Windows only — fails on
-  macOS/Linux Wine/Proton prefixes).
+- Try `pcm_list_saves` to find their saves, or the `pcm-list-saves` skill, which
+  falls back to a filesystem scan when that tool isn't available.
 - Otherwise ask the user for the absolute `.cdb` path. Keep it in context; the
   tools are stateless and need it on every call.
 
