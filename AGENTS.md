@@ -30,7 +30,7 @@ plugins/
   db-editor/
     .claude-plugin/plugin.json    # Claude Code plugin manifest
     .codex-plugin/plugin.json     # Codex plugin manifest (adds `interface` block)
-    .mcp.json                     # MCP servers bundled with the plugin (pcm-mcp)
+    .mcp.json                     # MCP servers bundled with the plugin (@pcmstack/mcp)
     assets/                       # logo.svg + app-icon.png, referenced by the Codex manifest
     skills/
       pcm-database/               # kebab-case
@@ -185,10 +185,11 @@ Consequences worth remembering:
 - Skills operate on files that may be irreplaceable (a career save can be hundreds of hours).
   The invariant every skill and script must preserve: **treat the original `.cdb` as
   read-only** — back it up, write edits to a new file, never overwrite in place.
-- No secrets or credentials belong in this repository. The bundled MCP server (`pcm-mcp`, run
-  via `npx -y pcm-mcp@0.4.0`) runs locally on the user's machine and needs none. The version is
-  pinned in [.mcp.json](plugins/db-editor/.mcp.json) so every user gets the same server —
-  bumping it is a deliberate change, not something `npx` should decide.
+- No secrets or credentials belong in this repository. The bundled MCP server (`@pcmstack/mcp`,
+  run via `npx -y @pcmstack/mcp@<pin>`) runs locally on the user's machine and needs none. It is
+  pinned to an exact version in [.mcp.json](plugins/db-editor/.mcp.json) — read that file for
+  the current one, and never quote a version number here — so every user gets the same server;
+  bumping the pin is a deliberate change, not something `npx` should decide.
 - `.claude/settings.local.json` is local, machine-specific permission state — don't extend it
   as a way to encode project conventions, and don't rely on paths inside it.
 
@@ -198,4 +199,4 @@ Consequences worth remembering:
 - `README.md` still lists "Coming soon" under Available Skills; it lags the actual contents.
 - Related projects, useful when a skill's behaviour depends on them:
   [cdb-converter](https://github.com/PCMStack/converter) (lossless `.cdb` ⇄ SQLite) and
-  [pcm-mcp](https://github.com/PCMStack/mcp) (MCP server for querying/editing PCM databases).
+  [@pcmstack/mcp](https://github.com/PCMStack/mcp) (MCP server for querying/editing PCM databases).

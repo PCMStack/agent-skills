@@ -1,6 +1,6 @@
 ---
 name: pcm-database
-description: Open, explore and edit Pro Cycling Manager databases (.cdb) — rider ratings, team rosters, contracts, races. Routes between the pcm-mcp MCP server and a cdb → SQLite conversion via the cdb-converter CLI. Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
+description: Open, explore and edit Pro Cycling Manager databases (.cdb) — rider ratings, team rosters, contracts, races. Routes between the MCP server and a cdb → SQLite conversion via the cdb-converter CLI. Use this skill whenever a .cdb file is mentioned, or whenever someone talks about a PCM / Pro Cycling Manager save, career, database, roster, cyclist stats, or wants to "edit my game" — even if they never say the words "cdb" or "database", and even if they only want to read something rather than change it.
 ---
 
 # Pro Cycling Manager database editing
@@ -29,7 +29,7 @@ tool list?** Look; don't assume.
 - **Present** → Route A for lookups and one-off edits, falling back to Route B as soon as the
   question outgrows the tools.
 
-The tools decide it because of what each route can physically reach. pcm-mcp runs on the
+The tools decide it because of what each route can physically reach. The MCP server runs on the
 user's machine, so it can find the game's own save directories, discover careers, and write a
 new `.cdb` there — but it cannot see a file that exists only in your sandbox. Route B works
 anywhere you can read the file and run the converter, and gives you unrestricted SQL:
@@ -61,7 +61,7 @@ as read-only, always:
 Before writing anything — either route — read `references/database-constraints.md`. It's the running
 list of what the game and the write tools actually accept.
 
-## Route A — pcm-mcp
+## Route A — MCP server
 
 Every `pcm_*` tool is stateless: it takes an absolute `databasePath`, re-reads the `.cdb`
 into a fresh in-memory database, and answers. There's no implicitly current file, so carry

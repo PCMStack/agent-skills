@@ -69,7 +69,7 @@ Node and `sqlite3` are only needed at runtime, when a skill actually opens a dat
 
 Open, explore and edit a PCM database. The skill picks between two routes on its own:
 
-- **pcm-mcp** — the bundled [MCP server](https://github.com/PCMStack/mcp) discovers your saves
+- **@pcmstack/mcp** — the bundled [MCP server](https://github.com/PCMStack/mcp) discovers your saves
   on disk and exposes targeted tools (search a cyclist, read a roster, update ratings). Best
   for lookups and one-off edits.
 - **SQLite** — a lossless `.cdb → sqlite` conversion via
@@ -93,7 +93,7 @@ delegates serialization to `pcm_generate_startlist_xml` so the file is always we
 ```
 your request ──▶ agent ──▶ SKILL.md
                             │
-                            ├─▶ pcm-mcp (MCP)  ──▶ saves on disk, targeted reads/writes
+                            ├─▶ @pcmstack/mcp (MCP)  ──▶ saves on disk, targeted reads/writes
                             └─▶ cdb-converter  ──▶ database.sqlite ──▶ SQL ──▶ database_edited.cdb
 ```
 
@@ -138,5 +138,5 @@ npx prettier --check "**/*.{md,json}"                         # formatting
 ## Related projects
 
 - [cdb-converter](https://github.com/PCMStack/converter) — lossless `.cdb` ⇄ SQLite conversion
-- [pcm-mcp](https://github.com/PCMStack/mcp) — MCP server for querying and editing PCM databases
+- [@pcmstack/mcp](https://github.com/PCMStack/mcp) — MCP server for querying and editing PCM databases
 - [Agent Skills](https://agentskills.io/) — the portable skill format used here
