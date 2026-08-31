@@ -186,10 +186,10 @@ Consequences worth remembering:
   The invariant every skill and script must preserve: **treat the original `.cdb` as
   read-only** — back it up, write edits to a new file, never overwrite in place.
 - No secrets or credentials belong in this repository. The bundled MCP server (`@pcmstack/mcp`,
-  run via `npx -y`) runs locally on the user's machine and needs none. It is pinned to an exact
-  version in [.mcp.json](plugins/db-editor/.mcp.json) — read that file for the current one, and
-  never quote a version number here — so every user gets the same server; bumping the pin is a
-  deliberate change, not something `npx` should decide.
+  run via `npx -y @pcmstack/mcp@<pin>`) runs locally on the user's machine and needs none. It is
+  pinned to an exact version in [.mcp.json](plugins/db-editor/.mcp.json) — read that file for
+  the current one, and never quote a version number here — so every user gets the same server;
+  bumping the pin is a deliberate change, not something `npx` should decide.
 - `.claude/settings.local.json` is local, machine-specific permission state — don't extend it
   as a way to encode project conventions, and don't rely on paths inside it.
 
