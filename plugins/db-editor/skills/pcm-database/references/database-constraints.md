@@ -57,10 +57,10 @@ non-zero, since a never-played official release stores `0` there.
 
 ## Columns whose names are not what the tools call them
 
-The pcm-mcp rating parameters are **camelCase API names, not database columns**. Grepping the
+The `pcm_*` rating parameters are **camelCase API names, not database columns**. Grepping the
 schema for the API name finds nothing and makes a column that exists look absent:
 
-| pcm-mcp parameter  | Actual `DYN_cyclist` column                              |
+| Tool parameter     | Actual `DYN_cyclist` column                              |
 | ------------------ | -------------------------------------------------------- |
 | `mediumMountain`   | `charac_i_medium_mountain` (+ `limit_i_medium_mountain`) |
 | `currentAbility`   | `value_f_current_ability`                                |
